@@ -15,6 +15,16 @@
 	</style>
   </head>
   <body>
+	<div class = "container">
+	<p>
+	Enter a longitude and latitude to calculate your weather (38 and -122 is just an example)
+	</p>
+	<form>
+  	Longitude: <input type="text" id="longitude" value="38"><br>
+  	Latitude: <input type="text" id="latitude" value="-122"><br>
+	</form>
+	<button onclick="myTest();">Submit</button>
+	</div>
   	<div class="container">
 		<br>
 		<h1 style="text-align:center">Weather Forecast</h1>
@@ -62,15 +72,32 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 	<script>
+		var long;
+		var lat;
+		function myTest()
+		{
+			long = document.getElementById("longitude").value;
+			lat = document.getElementById("latitude").value;
 		$(document).ready(function() {
-			var url ='https://api.darksky.net/forecast/3951319d944170e9519b593069fc6395/37.8267,-122.4233'; //Place your DarkSky API Call Here 
+			var url ='https://api.darksky.net/forecast/3951319d944170e9519b593069fc6395/' + long + ',' + lat; //Place your DarkSky API Call Here 
 			$.ajax({url:url, dataType:"jsonp"}).then(function(data) {
+                                        if (data.currently.apparentTemperature > 85)
+                                        {
+                                        	document.getElementsByTagName("style")[0].innerHTML = "#thermometer_inner { width: 95%; height: " + data.currently.apparentTemperature + "%; margin:2.5%; background: red; position:absolute; bottom:0;} #thermometer_outer {height:400px; position:relative;} #temp_today { color:white; text-align:center; position:relative; top:50%; }"
+                                        }
+					else if (data.currently.apparentTemperature < 65)
+                                        {
+                                        	document.getElementsByTagName("style")[0].innerHTML = "#thermometer_inner { width: 95%; height: " + data.currently.apparentTemperature + "%; margin:2.5%; background: blue; position:absolute; bottom:0;} #thermometer_outer {height:400px; position:relative;} #temp_today { color:white; text-align:center; position:relative; top:50%; }"
+                                        }
+					else
+                                        {
+                                        	document.getElementsByTagName("style")[0].innerHTML = "#thermometer_inner { width: 95%; height: " + data.currently.apparentTemperature + "%; margin:2.5%; background: grey; position:absolute; bottom:0;} #thermometer_outer {height:400px; position:relative;} #temp_today { color:white; text-align:center; position:relative; top:50%; }"
+                                        }
 				        document.getElementById("temp_today").innerHTML = data.currently.apparentTemperature + "F";
                                         document.getElementById("summary_today").innerHTML = data.currently.icon;
                                         document.getElementById("wind_today").innerHTML = data.currently.windGust;
                                         document.getElementById("precip_today").innerHTML = data.currently.precipProbability*100 + "%";
                                         document.getElementById("humidity_today").innerHTML = data.currently.humidity*100 + "%";
-                                        document.getElementsByTagName("style")[0].innerHTML = "#thermometer_inner { width: 95%; height: " + data.currently.apparentTemperature + "%; margin:2.5%; background: red; position:absolute; bottom:0;} #thermometer_outer {height:400px; position:relative;} #temp_today { color:white; text-align:center; position:relative; top:50%; }"
                                         document.getElementById("image_today").src = "img/" + data.currently.icon + ".png";
                                         document.getElementById("icon_today").innerHTML = data.currently.summary;
 				/* 
@@ -128,6 +155,7 @@
 				
 			})
 		})
+	}
  	</script>
 </body>
 </html>
